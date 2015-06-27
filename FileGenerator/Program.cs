@@ -144,12 +144,14 @@ namespace FileGenerator
                 Console.WriteLine("How many delimiters in file name? (8 max)");
                 ConsoleKeyInfo delimiterCountEntered = Console.ReadKey(true);
 
+                int delimiterCount = 0;
                 while (true)
                 {
                     if (char.IsNumber(delimiterCountEntered.KeyChar)
                         && int.Parse(delimiterCountEntered.KeyChar.ToString()) <= 8)
                     {
                         Console.WriteLine(delimiterCountEntered.KeyChar);
+                        delimiterCount = int.Parse(delimiterCountEntered.KeyChar.ToString());
                         break;
 
                     }
@@ -157,10 +159,47 @@ namespace FileGenerator
                         delimiterCountEntered = Console.ReadKey(true);
                 }
 
-                Console.WriteLine($"You requested {fileCount} files.  How many different sets or sequences do you want to split the count by? (your can enter 1 to have all files the same sequence)");
-                Console.ForegroundColor = ConsoleColor.Cyan;
-                Console.WriteLine($"Example: 2012_Ford_F150_x, 2013_Toyota_4Runner_x, and 2016_Honda_Civic_x is 3 sequences...");
+                Console.ForegroundColor = ConsoleColor.DarkGray;
+                Console.WriteLine("NOTE: You can have multiple sequences.");
+                Console.WriteLine("Example: set 1, 10 files with a sequence of 2003_Ford_F150_x");
+                Console.WriteLine("Example: set 2, 20 files with a sequence of 2015_Honda_Civic_x");
+                Console.WriteLine("Example: set 3, 70 files with a sequence of 1969_Chevy_Camero_x");
                 Console.ResetColor();
+
+                var exampleSequenceFileName = new StringBuilder();
+                for (int i = 0; i < delimiterCount; i++)
+                {
+                    exampleSequenceFileName.Append("XXXX");
+                    exampleSequenceFileName.Append($"{delimiterEntered.KeyChar}");
+                }
+
+                Console.ForegroundColor = ConsoleColor.DarkGray;
+                Console.WriteLine($"Example based on {delimiterCountEntered.KeyChar} delimiters: {exampleSequenceFileName.ToString()}");
+                Console.ResetColor();
+                Console.WriteLine($"Enter sequence file name with {delimiterCountEntered.KeyChar} delimiters and press Enter.");
+
+                var sequence1 = Console.ReadLine();
+                Console.WriteLine($"You entered {sequence1}");
+                //Console.WriteLine($"You requested {fileCount} files.  How many different sets or sequences do you want to split the count by? (your can enter 1 to have all files the same sequence)");
+                //Console.ForegroundColor = ConsoleColor.Cyan;
+                //Console.WriteLine($"Example: 2012_Ford_F150_x, 2013_Toyota_4Runner_x, and 2016_Honda_Civic_x is 3 sequences...");
+                //Console.ResetColor();
+
+                //ConsoleKeyInfo sequencesCountEntered = Console.ReadKey(true);
+
+                //while (true)
+                //{
+                //    if (char.IsNumber(sequencesCountEntered.KeyChar)
+                //        && int.Parse(sequencesCountEntered.KeyChar.ToString()) <= 8)
+                //    {
+                //        Console.WriteLine(sequencesCountEntered.KeyChar);
+                //        break;
+
+                //    }
+                //    else
+                //        sequencesCountEntered = Console.ReadKey(true);
+                //}
+
             }
 
             Console.WriteLine(Environment.NewLine);
