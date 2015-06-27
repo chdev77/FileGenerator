@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -11,6 +12,9 @@ namespace FileGenerator
     {
         static void Main(string[] args)
         {
+            Console.WindowWidth = 105;
+            ConsoleUtilities.SetWindowPos(ConsoleUtilities.MyConsole, 0, 500, 300, 0, 0, ConsoleUtilities.SWP_NOSIZE);
+
             WriteHeaderInfo();
 
             ConsoleKeyInfo startKey;
@@ -23,7 +27,7 @@ namespace FileGenerator
             }
 
             bool isFileCountValid = false;
-            int fileCount;
+            int fileCount = 0;
             ConsoleKeyInfo fileCountKey;
             while (!isFileCountValid)
             {
@@ -101,22 +105,62 @@ namespace FileGenerator
                 }
             }
 
-            bool hasCustomNameConvention = false;
-            Console.WriteLine("Custom naming convention (2015_Ford_F150_x) where 'x' is the incrementer? y/n");
+                Console.WriteLine("Custom naming convention (2015_Ford_F150_x) where 'x' is the incrementer? y/n");
+                ConsoleKeyInfo namingAnswerEntered = Console.ReadKey(true);
 
-            ConsoleKeyInfo customNameKey = Console.ReadKey(true);
-            while (customNameKey.Key != ConsoleKey.Y && customNameKey.Key != ConsoleKey.N)
+                while (true)
+                {
+                    if (namingAnswerEntered.Key == ConsoleKey.Y
+                        || namingAnswerEntered.Key == ConsoleKey.N)
+                    {
+                        Console.WriteLine(namingAnswerEntered.KeyChar);
+                        break;
+                    }
+                    else
+                        namingAnswerEntered = Console.ReadKey(true);
+                }
+
+            bool hasCustomNameConvention = namingAnswerEntered.Key == ConsoleKey.Y ? true : false;
+
+            if (hasCustomNameConvention)
             {
-                customNameKey = Console.ReadKey(true);
-            }
+                Console.WriteLine("Choose a delimiter for the sequence ('_', '-', '!', ',')");
+                ConsoleKeyInfo delimiterEntered = Console.ReadKey(true);
 
-            hasCustomNameConvention = customNameKey.Key == ConsoleKey.Y ? true : false;
+                while (true)
+                {
+                    if (delimiterEntered.KeyChar == Char.Parse("_")
+                        || delimiterEntered.KeyChar == Char.Parse("-")
+                        || delimiterEntered.KeyChar == Char.Parse("!")
+                        || delimiterEntered.KeyChar == Char.Parse(","))
+                    {
+                        Console.WriteLine(delimiterEntered.KeyChar);
+                        break;
+                    }
+                    else
+                        delimiterEntered = Console.ReadKey(true);
+                }
 
-            if (hasCustomNameConvention) {
+                Console.WriteLine("How many delimiters in file name? (8 max)");
+                ConsoleKeyInfo delimiterCountEntered = Console.ReadKey(true);
 
+                while (true)
+                {
+                    if (char.IsNumber(delimiterCountEntered.KeyChar)
+                        && int.Parse(delimiterCountEntered.KeyChar.ToString()) <= 8)
+                    {
+                        Console.WriteLine(delimiterCountEntered.KeyChar);
+                        break;
 
+                    }
+                    else
+                        delimiterCountEntered = Console.ReadKey(true);
+                }
 
-
+                Console.WriteLine($"You requested {fileCount} files.  How many different sets or sequences do you want to split the count by? (your can enter 1 to have all files the same sequence)");
+                Console.ForegroundColor = ConsoleColor.Cyan;
+                Console.WriteLine($"Example: 2012_Ford_F150_x, 2013_Toyota_4Runner_x, and 2016_Honda_Civic_x is 3 sequences...");
+                Console.ResetColor();
             }
 
             Console.WriteLine(Environment.NewLine);
@@ -145,5 +189,19 @@ namespace FileGenerator
             Console.WriteLine("{0," + ((Console.WindowWidth / 2) + vertline.Length / 2) + "}", vertline);
 
         }
+    }
+
+
+
+    internal static class ConsoleUtilities {
+        public const int SWP_NOSIZE = 0x0001;
+
+        [DllImport("kernel32.dll", ExactSpelling = true)]
+        public static extern IntPtr GetConsoleWindow();
+
+        public static IntPtr MyConsole = GetConsoleWindow();
+
+        [DllImport("user32.dll", EntryPoint = "SetWindowPos")]
+        public static extern IntPtr SetWindowPos(IntPtr hWnd, int hWndInsertAfter, int x, int Y, int cx, int cy, int wFlags);
     }
 }
