@@ -179,7 +179,30 @@ namespace FileGenerator
                 Console.WriteLine($"Enter sequence file name with {delimiterCountEntered.KeyChar} delimiters and press Enter.");
 
                 var sequence1 = Console.ReadLine();
-                Console.WriteLine($"You entered {sequence1}");
+                while (true)
+                {
+                    var sequenceEntryValid = sequence1.Split(delimiterEntered.KeyChar).Count() == int.Parse(delimiterCountEntered.KeyChar.ToString());
+                    if (sequenceEntryValid)
+                    {
+                        Console.WriteLine($"You entered {sequence1}");
+                        break;
+                    }
+                    else
+                    {
+                        Console.WriteLine($"Invalid entry, not enough delimiters.  File name must have {delimiterCountEntered.KeyChar} delimiters. Press Enter to try again.");
+                        while (true)
+                        {
+                            if (Console.ReadKey().Key == ConsoleKey.Enter)
+                            {
+                                break;
+                            }
+                        }
+                        Console.WriteLine($"Enter sequence file name with {delimiterCountEntered.KeyChar} delimiters and press Enter.");
+                        sequence1 = Console.ReadLine();
+                    }
+                }
+
+
                 //Console.WriteLine($"You requested {fileCount} files.  How many different sets or sequences do you want to split the count by? (your can enter 1 to have all files the same sequence)");
                 //Console.ForegroundColor = ConsoleColor.Cyan;
                 //Console.WriteLine($"Example: 2012_Ford_F150_x, 2013_Toyota_4Runner_x, and 2016_Honda_Civic_x is 3 sequences...");
